@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class Consumer {
-    private static final String TOPIC_NAME = "test"; //토픽명
+    private static final String TOPIC_NAME = "order-fruits"; //토픽명
     private static final String BROKERS = "192.168.0.170:19092,192.168.0.171:29092,192.168.0.172:39092"; // 브로커 리스트
 
     public static void main(String[] args) {
@@ -20,9 +20,10 @@ public class Consumer {
         prop.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 
-        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "c-group-1");          // 컨슈머 그룹 아이디 지정
+        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "c-group-fruit-order");          // 컨슈머 그룹 아이디 지정
         prop.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");     // auto-commit 설정
         prop.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        // prop.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(prop);
 
@@ -36,7 +37,8 @@ public class Consumer {
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
                 for (ConsumerRecord<String, String> record : records) {
-                    printRecord(record);
+                    System.out.println(record.value() + " 배송 시작");
+                    // printRecord(record);
                 }
             }
         } catch (Exception e) {
